@@ -1,0 +1,40 @@
+# Pipeline for deploying an API to an Azure Web App
+
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureSubscription: '<your-service-connection-name>'
+  appName: '<your-app-service-name>'
+  packagePath: '$(System.DefaultWorkingDirectory)'
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.10'
+    displayName: 'Use Python 3.10'
+
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    displayName: 'Install dependencies'
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(packagePath)'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+      replaceExistingArchive: true
+    displayName: 'Archive app files'
+
+  - task: AzureWebApp@1
+    inputs:
+      azureSubscription: '$(azureSubscription)'
+      appName: '$(appName)'
+      package: '$(Build.ArtifactStagingDirectory)/app.zip'
+    displayName: 'Deploy to Azure Web App'
+
