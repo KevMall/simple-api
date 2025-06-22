@@ -7,8 +7,8 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  azureSubscription: '<your-service-connection-name>'
-  appName: '<your-app-service-name>'
+  azureSubscription: 'KM-PAYG'
+  appName: 'manix2k-manix2k-47f1be21-13d2-4cd2-a992-386588aa8a28'
   packagePath: '$(System.DefaultWorkingDirectory)'
 
 steps:
